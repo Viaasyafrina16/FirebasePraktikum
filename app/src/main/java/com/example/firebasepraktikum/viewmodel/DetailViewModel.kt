@@ -1,4 +1,13 @@
 package com.example.firebasepraktikum.viewmodel
+
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
+import com.example.firebasepraktikum.ModelData.Siswa
+import com.example.firebasepraktikum.view.Route.DestinasiDetail
+import java.io.IOException
+
 sealed interface StatusUIDetail {
     data class Success(val satusiswa: Siswa?) : StatusUIDetail
     object Error : StatusUIDetail
@@ -15,4 +24,32 @@ class DetailViewModel(savedStateHandle: SavedStateHandle, private val repository
 
     init {
         getSatuSiswa()
+    }
+    fun getSatuSiswa(){
+        viewModelScope.launch {
+            statusUIDetail = StatusUIDetail.loading
+            statusUIDetail = try {
+                StatusUIDetail.Success(satusiswa = repositorySiswa.getSatuSiswa(idSiswa) )
+            }
+            catch (e: IOException){
+                StatusUIDetail.Error
+            }
+            catch (e: Exception){
+                StatusUIDetail.Error
+            }
+        }
+    }
+    fun getSatuSiswa(){
+        viewModelScope.launch {
+            statusUIDetail = StatusUIDetail.loading
+            statusUIDetail = try {
+                StatusUIDetail.Success(satusiswa = repositorySiswa.getSatuSiswa(idSiswa) )
+            }
+            catch (e: IOException){
+                StatusUIDetail.Error
+            }
+            catch (e: Exception){
+                StatusUIDetail.Error
+            }
+        }
     }
