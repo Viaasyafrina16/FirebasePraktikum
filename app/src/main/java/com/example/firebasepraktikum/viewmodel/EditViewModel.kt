@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.firebasepraktikum.ModelData.DetailSiswa
 import com.example.firebasepraktikum.ModelData.UIStateSiswa
+import com.example.firebasepraktikum.ModelData.toDataSiswa
 import com.example.firebasepraktikum.ModelData.toUiStateSiswa
 import com.example.firebasepraktikum.Repository.RepositorySiswa
 import com.example.firebasepraktikum.view.Route.DestinasiDetail
@@ -29,15 +30,34 @@ RepositorySiswa
                 .toUiStateSiswa(true)
         }
     }
+
     fun updateUiState(detailSiswa: DetailSiswa) {
         uiStateSiswa =
-            UIStateSiswa(detailSiswa = detailSiswa, isEntryValid = validasiInput
-                (detailSiswa))
+            UIStateSiswa(
+                detailSiswa = detailSiswa, isEntryValid = validasiInput
+                    (detailSiswa)
+            )
     }
 
-    private fun validasiInput(uiState: DetailSiswa = uiStateSiswa.detailSiswa ): Boolean {
+    private fun validasiInput(uiState: DetailSiswa = uiStateSiswa.detailSiswa): Boolean {
         return with(uiState) {
             nama.isNotBlank() && alamat.isNotBlank() && telpon.isNotBlank()
         }
     }
+
+    suspend fun editSatuSiswa() {
+        if (validasiInput(uiStateSiswa.detailSiswa)) {
+            try {
+                repositorySiswa.editSatuSiswa(
+                    idSiswa, uiStateSiswa.detailSiswa.toDataSiswa
+                        ()
+                )
+                println("Update Sukses: $idSiswa")
+            } catch (e: Exception) {
+                println("Update Error: ${e.message}")
+            }
+        }
+    }
 }
+
+
